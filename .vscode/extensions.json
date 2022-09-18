@@ -3,6 +3,7 @@
     "christian-kohler.npm-intellisense",
     "DavidAnson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
-    "EditorConfig.EditorConfig"
+    "EditorConfig.EditorConfig",
+    "standard.vscode-standard"
   ]
 }
