@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www.js",
+    "debug": "cross-env DEBUG=react-discussion-component:* npm start",
+    "lint": "standard"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -12,6 +14,7 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "standard": "^17.0.0"
   }
 }

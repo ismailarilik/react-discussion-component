@@ -13,3 +13,10 @@ npm start
 ```sh
 npm run debug
 ```
+
+## Run linter
+
+```sh
+npm run lint
+```
+
