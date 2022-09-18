@@ -5,6 +5,8 @@
     "start": "nodemon ./bin/www.js",
     "debug": "cross-env DEBUG=react-discussion-component:* npm start",
     "lint": "standard --env jest",
+    "unittest": "jest",
+    "test": "npm run lint && npm run unittest"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -14,6 +16,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "jest": "^29.0.3",
     "nodemon": "^2.0.20",
     "standard": "^17.0.0"
   }

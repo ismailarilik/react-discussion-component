@@ -20,3 +20,14 @@ npm run debug
 npm run lint
 ```
 
+## Run tests
+
+```sh
+npm run unittest
+```
+
+## Run both linter and tests
+
+```sh
+npm test
+```
