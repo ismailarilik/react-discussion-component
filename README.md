@@ -2,6 +2,12 @@
 
 A discussion component to place below the articles
 
+## Requirements
+
+- [Git](https://git-scm.com/downloads)
+- [Node.js](https://nodejs.org/en/download/current/)
+- [MySQL](https://www.mysql.com/)
+
 ## Run the example app
 
 ```sh
