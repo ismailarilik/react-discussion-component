@@ -8,6 +8,11 @@ A discussion component to place below the articles
 - [Node.js](https://nodejs.org/en/download/current/)
 - [MySQL](https://www.mysql.com/)
 
+## Preparing
+
+- Clone the repo from GitHub: `git clone https://github.com/ismailarilik/react-discussion-component.git`
+- Install dependencies using npm: `npm install`
+
 ## Run the example app
 
 ```sh
