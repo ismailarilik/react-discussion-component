@@ -4,7 +4,7 @@
   "scripts": {
     "start": "nodemon ./bin/www.js",
     "debug": "cross-env DEBUG=react-discussion-component:* npm start",
-    "lint": "standard --env mocha"
+    "lint": "standard --env jest",
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
