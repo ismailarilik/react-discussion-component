@@ -1,4 +1,4 @@
-# react-discussion-component
+# react-discussion-component [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 A discussion component to place below the articles
 
