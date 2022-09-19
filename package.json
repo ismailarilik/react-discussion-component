@@ -2,8 +2,8 @@
   "name": "react-discussion-component",
   "version": "0.0.0",
   "scripts": {
-    "start": "nodemon ./bin/www.js",
-    "debug": "cross-env DEBUG=react-discussion-component:* npm start",
+    "start": "node ./bin/www.js",
+    "debug": "cross-env DEBUG=react-discussion-component:* nodemon ./bin/www.js",
     "lint": "standard --env jest",
     "unittest": "jest",
     "test": "npm run lint && npm run unittest"
