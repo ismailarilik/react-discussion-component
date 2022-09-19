@@ -42,3 +42,7 @@ npm run unittest
 ```sh
 npm test
 ```
+
+## Attributions
+
+Avatars are exported from [https://vue-nice-avatar.vercel.app/](https://vue-nice-avatar.vercel.app/).
