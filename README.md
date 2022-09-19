@@ -12,6 +12,7 @@ A discussion component to place below the articles
 
 - Clone the repo from GitHub: `git clone https://github.com/ismailarilik/react-discussion-component.git`
 - Install dependencies using npm: `npm install`
+- Build CSS using Tailwind CSS: `npm run build-css`
 
 ## Run the example app
 
