@@ -20,11 +20,15 @@ A discussion component to place below the articles
 npm start
 ```
 
+Then navigate to [http://localhost:3000](http://localhost:3000).
+
 ## Debug the example app
 
 ```sh
 npm run debug
 ```
+
+Then navigate to [http://localhost:3000](http://localhost:3000).
 
 ## Run linter
 
