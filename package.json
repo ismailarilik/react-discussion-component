@@ -4,7 +4,8 @@
   "scripts": {
     "start": "node ./bin/www.js",
     "debug": "cross-env DEBUG=react-discussion-component:* nodemon ./bin/www.js",
-    "build-css": "tailwindcss -i ./public/stylesheets/style.css -o ./public/dist/output.css --watch",
+    "build-css": "tailwindcss -i ./public/stylesheets/style.css -o ./public/dist/output.css",
+    "build-css:dev": "tailwindcss -i ./public/stylesheets/style.css -o ./public/dist/output.css --watch",
     "lint": "standard --env jest",
     "unittest": "jest",
     "test": "npm run lint && npm run unittest"

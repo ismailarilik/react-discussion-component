@@ -24,6 +24,14 @@ Then navigate to [http://localhost:3000](http://localhost:3000).
 
 ## Debug the example app
 
+Build and watch CSS using Tailwind CSS:
+
+```sh
+npm run build-css:dev
+```
+
+Start the server in development mode:
+
 ```sh
 npm run debug
 ```
