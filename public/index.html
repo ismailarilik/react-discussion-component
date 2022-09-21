@@ -106,38 +106,14 @@
       <hr class="my-10">
 
       <!-- Comments -->
-      <div>
-        <!-- First comment -->
-        <div class="flex gap-x-3">
-          <img src="/images/avatar-2.svg" alt="Avatar" class="inline w-8 h-8"/>
-          <div>
-            <div class="flex gap-x-3">
-              <!-- User name -->
-              <div class="font-medium">Clarence Richardson</div>
-              <!-- Separator -->
-              <div>&middot;</div>
-              <!-- Time -->
-              <div class="text-slate-400">45 min ago</div>
-            </div>
-            <div>
-              <!-- Comment -->
-              <div>
-                Nam eleifend nunc non elit scelerisque mollis.
-                Suspendisse volutpat dignissim facilisis.
-                Sed consequat finibus tortor, sed gravida diam laoreet egestas.
-              </div>
-            </div>
-            <div class="mt-3">
-              <!-- Upvote button -->
-              <button class="font-medium text-slate-500">&#9650; Upvote</button>
-              <!-- Reply button -->
-              <button class="font-medium text-slate-500 ml-8">Reply</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ul id="comments">
+        <!-- Here will be filled with comments by a JS script -->
+      </ul>
     </div>
   </div>
+
+  <script src="/javascripts/luxon.min.js"></script>
+  <script src="/javascripts/index.js"></script>
 </body>
 
 </html>
