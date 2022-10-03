@@ -19,7 +19,10 @@ module.exports = (sequelize, DataTypes) => {
     avatar: DataTypes.STRING,
     comment_date: DataTypes.DATE,
     comment_text: DataTypes.TEXT,
-    upvotes: DataTypes.INTEGER,
+    upvotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
     parent_comment_id: DataTypes.INTEGER
   }, {
     sequelize,
