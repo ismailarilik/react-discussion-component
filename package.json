@@ -8,7 +8,8 @@
     "build-css:dev": "tailwindcss -i ./public/stylesheets/style.css -o ./public/dist/output.css --watch",
     "lint": "standard --env jest",
     "unittest": "jest",
-    "test": "npm run lint && npm run unittest"
+    "test": "npm run lint && npm run unittest",
+    "db:create": "sequelize-cli db:create"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
