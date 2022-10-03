@@ -13,6 +13,8 @@ A discussion component to place below the articles
 - Clone the repo from GitHub: `git clone https://github.com/ismailarilik/react-discussion-component.git`
 - Install dependencies using npm: `npm install`
 - Start MySQL server: `sudo systemctl start mysql.service`
+- Create DB: `npm run db:create`
+- Run migrations: `npm run db:migrate`
 - Build CSS using Tailwind CSS: `npm run build-css`
 
 ## Run the example app
