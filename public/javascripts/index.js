@@ -2,8 +2,8 @@
 
 const DateTime = luxon.DateTime
 
-const generateName = () => {
-  const names = [
+const generateUsername = () => {
+  const usernames = [
     'Clarence Richardson',
     'Nellie Zavala',
     'Millie-Mae Hawes',
@@ -16,7 +16,7 @@ const generateName = () => {
     'Mariella Howell'
   ]
   const randomIndex = Math.floor(Math.random() * 10)
-  return names[randomIndex]
+  return usernames[randomIndex]
 }
 
 const generateAvatar = () => {
@@ -39,48 +39,50 @@ const generateAvatar = () => {
 class Comment {
   constructor (
     {
-      name = generateName(),
+      username = generateUsername(),
       avatar = generateAvatar(),
-      date = DateTime.now(),
-      comment,
+      commentDate = DateTime.now(),
+      commentText,
       upvotes = 0,
+      parentCommentId = null,
       comments = []
     } = {}
   ) {
-    this.name = name
+    this.username = username
     this.avatar = avatar
-    this.date = date
-    this.comment = comment
+    this.commentDate = commentDate
+    this.commentText = commentText
     this.upvotes = upvotes
+    this.parentCommentId = parentCommentId
     this.comments = comments
   }
 }
 
 const comments = [
   new Comment({
-    comment: `Cras interdum ullamcorper neque at pretium.
+    commentText: `Cras interdum ullamcorper neque at pretium.
       Sed vulputate finibus orci accumsan pulvinar.
       Duis molestie malesuada enim ut efficitur.`
   }),
   new Comment({
-    comment: `Morbi auctor facilisis augue in scelerisque.
+    commentText: `Morbi auctor facilisis augue in scelerisque.
     Donec aliquam orci turpis, eu molestie arcu ultricies et.
     Donec consequat mi pellentesque posuere ultrices.`,
     comments: [
       new Comment({
-        comment: `Integer congue scelerisque elit quis elementum.
+        commentText: `Integer congue scelerisque elit quis elementum.
         Quisque ligula felis, malesuada a vestibulum id, eleifend et ipsum.
         Etiam non vestibulum turpis, a cursus quam.`
       }),
       new Comment({
-        comment: `Nam eleifend nunc non elit scelerisque mollis.
+        commentText: `Nam eleifend nunc non elit scelerisque mollis.
         Suspendisse volutpat dignissim facilisis.
         Sed consequat finibus tortor, sed gravida diam laoreet egestas.`
       })
     ]
   }),
   new Comment({
-    comment: `Vivamus rutrum ultrices tortor, quis vestibulum dolor rhoncus a.
+    commentText: `Vivamus rutrum ultrices tortor, quis vestibulum dolor rhoncus a.
     Nam quam lorem, laoreet vitae nisi a, scelerisque blandit mauris.
     Nunc commodo rutrum vestibulum.`
   })
@@ -96,16 +98,16 @@ const getCommentFragment = comment => {
       <div>
         <div class="flex gap-x-3">
           <!-- User name -->
-          <div class="font-medium">${comment.name}</div>
+          <div class="font-medium">${comment.username}</div>
           <!-- Separator -->
           <div>&middot;</div>
           <!-- Time -->
-          <div class="text-sm my-auto text-slate-400">${comment.date.toRelative({ style: 'narrow' })}</div>
+          <div class="text-sm my-auto text-slate-400">${comment.commentDate.toRelative({ style: 'narrow' })}</div>
         </div>
         <div>
           <!-- Comment -->
           <div>
-            ${comment.comment}
+            ${comment.commentText}
           </div>
         </div>
         <div class="mt-3 font-medium text-sm text-slate-500">
@@ -128,6 +130,30 @@ const getCommentFragment = comment => {
 
 // Add new commenter image
 document.getElementById('new-commenter-image').src = generateAvatar()
+// addEventListener for create-comment button
+const createCommentButton = document.getElementById('create-comment')
+createCommentButton.addEventListener('click', async () => {
+  const commentInput = document.querySelector('#new-comment input#comment')
+  const commentInputValue = commentInput.value
+  const comment = new Comment({ commentText: commentInputValue })
+
+  await fetch('/comments', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      comment: {
+        username: comment.username,
+        avatar: comment.avatar,
+        commentDate: comment.commentDate,
+        commentText: comment.commentText,
+        upvotes: comment.upvotes,
+        parentCommentId: comment.parentCommentId
+      }
+    })
+  })
+})
 
 // Iterate over comments and display them in HTML
 const commentsElement = document.getElementById('comments')
