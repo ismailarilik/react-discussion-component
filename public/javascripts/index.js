@@ -39,61 +39,33 @@ const generateAvatar = () => {
 class Comment {
   constructor (
     {
+      id = null,
       username = generateUsername(),
       avatar = generateAvatar(),
       commentDate = DateTime.now(),
       commentText,
       upvotes = 0,
-      parentCommentId = null,
-      comments = []
+      parentCommentId = null
     } = {}
   ) {
+    this.id = id
     this.username = username
     this.avatar = avatar
     this.commentDate = commentDate
     this.commentText = commentText
     this.upvotes = upvotes
     this.parentCommentId = parentCommentId
-    this.comments = comments
   }
 }
 
-const comments = [
-  new Comment({
-    commentText: `Cras interdum ullamcorper neque at pretium.
-      Sed vulputate finibus orci accumsan pulvinar.
-      Duis molestie malesuada enim ut efficitur.`
-  }),
-  new Comment({
-    commentText: `Morbi auctor facilisis augue in scelerisque.
-    Donec aliquam orci turpis, eu molestie arcu ultricies et.
-    Donec consequat mi pellentesque posuere ultrices.`,
-    comments: [
-      new Comment({
-        commentText: `Integer congue scelerisque elit quis elementum.
-        Quisque ligula felis, malesuada a vestibulum id, eleifend et ipsum.
-        Etiam non vestibulum turpis, a cursus quam.`
-      }),
-      new Comment({
-        commentText: `Nam eleifend nunc non elit scelerisque mollis.
-        Suspendisse volutpat dignissim facilisis.
-        Sed consequat finibus tortor, sed gravida diam laoreet egestas.`
-      })
-    ]
-  }),
-  new Comment({
-    commentText: `Vivamus rutrum ultrices tortor, quis vestibulum dolor rhoncus a.
-    Nam quam lorem, laoreet vitae nisi a, scelerisque blandit mauris.
-    Nunc commodo rutrum vestibulum.`
-  })
-]
+const getCommentFragment = (comment, comments) => {
+  const childComments = comments.filter(c => c.parentCommentId === comment.id)
 
-const getCommentFragment = comment => {
   return `
     <li class="flex gap-x-3 mt-8">
       <div class="flex-none flex flex-col">
         <img src="${comment.avatar}" alt="Avatar" class="w-8 h-8"/>
-        <div class="h-full ml-4 border-l-2 ${comment.comments.length === 0 ? 'hidden' : ''}"></div>
+        <div class="h-full ml-4 border-l-2 ${childComments.length === 0 ? 'hidden' : ''}"></div>
       </div>
       <div>
         <div class="flex gap-x-3">
@@ -121,7 +93,7 @@ const getCommentFragment = comment => {
         </div>
         <!-- Sub-comments -->
         <ul>
-          ${comment.comments.map(comment => getCommentFragment(comment)).join('')}
+          ${childComments.map(comment => getCommentFragment(comment, comments)).join('')}
         </ul>
       </div>
     </li>
@@ -155,8 +127,20 @@ createCommentButton.addEventListener('click', async () => {
   })
 })
 
-// Iterate over comments and display them in HTML
-const commentsElement = document.getElementById('comments')
-comments.forEach(comment => {
-  commentsElement.innerHTML += getCommentFragment(comment)
-})
+// Fetch comments and display them in screen
+fetch('/comments')
+  .then(response => response.json())
+  .then(data => {
+    const comments = data.comments
+    // Iterate over comments and replace commentDate strings with Luxon DateTime objects; they will be necessary
+    comments.forEach(comment => {
+      comment.commentDate = DateTime.fromISO(comment.commentDate)
+    })
+    // Sort comments by their commentDate attributes
+    comments.sort((a, b) => b.commentDate - a.commentDate)
+    // Iterate over root comments and display them in HTML
+    const commentsElement = document.getElementById('comments')
+    comments.filter(comment => comment.parentCommentId === null).forEach(comment => {
+      commentsElement.innerHTML += getCommentFragment(comment, comments)
+    })
+  })
