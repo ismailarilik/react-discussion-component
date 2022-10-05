@@ -82,13 +82,4 @@ const updateComment = async (req, res, next) => {
 router.patch('/:id', updateComment)
 router.put('/:id', updateComment)
 
-
-
-router.get('/destroy', async (req, res, next) => {
-  await Comment.destroy({ truncate: true })
-  res.send('Oldu')
-})
-
-
-
 module.exports = router
