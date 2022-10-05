@@ -145,6 +145,8 @@ createCommentButton.addEventListener('click', async () => {
       }
     })
   })
+
+  refreshCommentFragment()
 })
 
 refreshCommentFragment()
