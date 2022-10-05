@@ -89,10 +89,50 @@ const getCommentFragment = (comment, comments) => {
           &nbsp;
           <span comment-id="${comment.id}" class="upvotes view">${comment.upvotes}</span>
           <!-- Reply button -->
-          <button class="ml-8">Reply</button>
+          <button comment-id="${comment.id}" class="ml-8 reply">Reply</button>
         </div>
         <!-- Sub-comments -->
         <ul>
+          <li comment-id="${comment.id}" class="new-comment nested hidden mt-8 gap-x-3">
+            <img alt="Avatar" class="commenter new inline w-8 h-8"/>
+            <input
+              type="text"
+              name="comment"
+              placeholder="What are your thoughts?"
+              required
+              class="
+                comment
+                grow
+                px-2
+                placeholder:text-xs
+                border-2
+                rounded
+                focus:outline-none
+                focus:border-2
+                focus:border-purple-500
+              "
+              minlength="10"
+              maxlength="255"
+            >
+            <button
+              class="
+                create-comment
+                bg-purple-700
+                text-sm
+                text-white
+                px-4
+                py-1
+                rounded
+                hover:bg-purple-800
+                active:bg-purple-900
+                focus:outline-none
+                focus:ring
+                focus:ring-purple-500
+              "
+            >
+              Comment
+            </button>
+          </li>
           ${childComments.map(comment => getCommentFragment(comment, comments)).join('')}
         </ul>
       </div>
@@ -151,6 +191,59 @@ const refreshCommentFragment = async () => {
       } catch (e) {
         console.log(e)
       }
+    })
+  })
+
+  // addEventListener for Reply buttons
+  const replyButtons = document.querySelectorAll('button.reply')
+  replyButtons.forEach(replyButtonElement => {
+    /*
+      Add a create comment fragment below this comment to provide user a way to reply to this comment
+    */
+    replyButtonElement.addEventListener('click', event => {
+      const commentId = event.target.getAttribute('comment-id')
+      // Show create comment fragment below this comment
+      const nestedNewComment = document.querySelector(`.new-comment.nested[comment-id="${commentId}"]`)
+      nestedNewComment.classList.remove('hidden')
+      nestedNewComment.classList.add('flex')
+      // Set new commenter image
+      nestedNewComment.querySelector('img.commenter.new').src = generateAvatar()
+      // addEventListener for the Comment button of this new nested comment
+      nestedNewComment.querySelector('button.create-comment').addEventListener('click', async event => {
+        const commentInput = nestedNewComment.querySelector('input.comment')
+        const commentInputValue = commentInput.value
+        const comment = new Comment({
+          commentText: commentInputValue,
+          parentCommentId: commentId
+        })
+
+        try {
+          const response = await fetch('/comments', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              comment: {
+                username: comment.username,
+                avatar: comment.avatar,
+                commentDate: comment.commentDate,
+                commentText: comment.commentText,
+                upvotes: comment.upvotes,
+                parentCommentId: comment.parentCommentId
+              }
+            })
+          })
+
+          if (response.ok) {
+            refreshCommentFragment()
+          } else {
+            throw Error(`${response.statusText} Error message: ${await response.text()}`)
+          }
+        } catch (e) {
+          console.log(e)
+        }
+      })
     })
   })
 }
