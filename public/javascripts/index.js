@@ -100,6 +100,26 @@ const getCommentFragment = (comment, comments) => {
   `
 }
 
+const refreshCommentFragment = async () => {
+  // Fetch comments and display them in screen
+  const response = await fetch('/comments')
+  const data = await response.json()
+
+  const comments = data.comments
+  // Iterate over comments and replace commentDate strings with Luxon DateTime objects; they will be necessary
+  comments.forEach(comment => {
+    comment.commentDate = DateTime.fromISO(comment.commentDate)
+  })
+  // Sort comments by their commentDate attributes
+  comments.sort((a, b) => b.commentDate - a.commentDate)
+  // Iterate over root comments and display them in HTML
+  const commentsElement = document.getElementById('comments')
+  commentsElement.innerHTML = ''
+  comments.filter(comment => comment.parentCommentId === null).forEach(comment => {
+    commentsElement.innerHTML += getCommentFragment(comment, comments)
+  })
+}
+
 // Add new commenter image
 document.getElementById('new-commenter-image').src = generateAvatar()
 // addEventListener for create-comment button
@@ -127,20 +147,4 @@ createCommentButton.addEventListener('click', async () => {
   })
 })
 
-// Fetch comments and display them in screen
-fetch('/comments')
-  .then(response => response.json())
-  .then(data => {
-    const comments = data.comments
-    // Iterate over comments and replace commentDate strings with Luxon DateTime objects; they will be necessary
-    comments.forEach(comment => {
-      comment.commentDate = DateTime.fromISO(comment.commentDate)
-    })
-    // Sort comments by their commentDate attributes
-    comments.sort((a, b) => b.commentDate - a.commentDate)
-    // Iterate over root comments and display them in HTML
-    const commentsElement = document.getElementById('comments')
-    comments.filter(comment => comment.parentCommentId === null).forEach(comment => {
-      commentsElement.innerHTML += getCommentFragment(comment, comments)
-    })
-  })
+refreshCommentFragment()
