@@ -84,10 +84,10 @@ const getCommentFragment = (comment, comments) => {
         </div>
         <div class="mt-3 font-medium text-sm text-slate-500">
           <!-- Upvote button -->
-          <button>&#9650; Upvote</button>
+          <button comment-id="${comment.id}" class="upvotes">&#9650; Upvote</button>
           <!-- Upvote count -->
           &nbsp;
-          <span>${comment.upvotes}</span>
+          <span comment-id="${comment.id}" class="upvotes view">${comment.upvotes}</span>
           <!-- Reply button -->
           <button class="ml-8">Reply</button>
         </div>
@@ -117,6 +117,41 @@ const refreshCommentFragment = async () => {
   commentsElement.innerHTML = ''
   comments.filter(comment => comment.parentCommentId === null).forEach(comment => {
     commentsElement.innerHTML += getCommentFragment(comment, comments)
+  })
+
+  // addEventListener for upvotes buttons
+  const upvotesButtons = document.querySelectorAll('button.upvotes')
+  upvotesButtons.forEach(buttonElement => {
+    buttonElement.addEventListener('click', async event => {
+      /*
+        Update this comment by increasing its upvotes attribute by one
+      */
+      const commentId = event.target.getAttribute('comment-id')
+      // Find current upvotes value
+      const upvotesView = document.querySelector(`.upvotes.view[comment-id="${commentId}"]`)
+      const upvotesValue = parseInt(upvotesView.innerHTML)
+      try {
+        const response = await fetch(`/comments/${commentId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            comment: {
+              upvotes: upvotesValue + 1
+            }
+          })
+        })
+
+        if (response.ok) {
+          refreshCommentFragment()
+        } else {
+          throw Error(`${response.statusText} Error message: ${await response.text()}`)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    })
   })
 }
 

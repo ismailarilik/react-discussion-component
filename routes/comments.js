@@ -42,4 +42,26 @@ router.post('/', async (req, res, next) => {
   })
 })
 
+/* Update a comment */
+const updateComment = async (req, res, next) => {
+  const commentId = parseInt(req.params.id)
+  const comment = req.body.comment
+  try {
+    await Comment.update(
+      comment,
+      {
+        where: {
+          id: commentId
+        }
+      }
+    )
+    res.sendStatus(200)
+  } catch (e) {
+    console.log(e)
+    res.status(500).send(e.message)
+  }
+}
+router.patch('/:id', updateComment)
+router.put('/:id', updateComment)
+
 module.exports = router
