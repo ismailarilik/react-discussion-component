@@ -266,24 +266,32 @@ createCommentButton.addEventListener('click', async () => {
   const commentInputValue = commentInput.value
   const comment = new Comment({ commentText: commentInputValue })
 
-  await fetch('/comments', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      comment: {
-        username: comment.username,
-        avatar: comment.avatar,
-        commentDate: comment.commentDate,
-        commentText: comment.commentText,
-        upvotes: comment.upvotes,
-        parentCommentId: comment.parentCommentId
-      }
+  try {
+    const response = await fetch('/comments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        comment: {
+          username: comment.username,
+          avatar: comment.avatar,
+          commentDate: comment.commentDate,
+          commentText: comment.commentText,
+          upvotes: comment.upvotes,
+          parentCommentId: comment.parentCommentId
+        }
+      })
     })
-  })
 
-  refreshCommentFragment()
+    if (response.ok) {
+      refreshCommentFragment()
+    } else {
+      throw Error(`${response.statusText} Error message: ${await response.text()}`)
+    }
+  } catch (e) {
+    console.log(e)
+  }
 })
 
 refreshCommentFragment()
