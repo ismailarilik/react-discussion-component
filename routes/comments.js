@@ -5,18 +5,24 @@ const router = express.Router()
 
 /* GET comments listing. */
 router.get('/', async (req, res, next) => {
-  const comments = await Comment.findAll()
-  res.send({
-    comments: comments.map(comment => ({
-      id: comment.id,
-      username: comment.username,
-      avatar: comment.avatar,
-      commentDate: comment.comment_date,
-      commentText: comment.comment_text,
-      upvotes: comment.upvotes,
-      parentCommentId: comment.parent_comment_id
-    }))
-  })
+  try {
+    const comments = await Comment.findAll()
+    res.send({
+      comments: comments.map(comment => ({
+        id: comment.id,
+        username: comment.username,
+        avatar: comment.avatar,
+        commentDate: comment.comment_date,
+        commentText: comment.comment_text,
+        upvotes: comment.upvotes,
+        parentCommentId: comment.parent_comment_id
+      }))
+    })
+  } catch (e) {
+    console.log(e)
+    // NOTE: The status code 500 is intentional; it is thought as a general placeholder indicates that an error exists
+    res.status(500).send(e.message)
+  }
 })
 
 /* Create a comment */
