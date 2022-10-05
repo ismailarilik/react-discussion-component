@@ -142,110 +142,119 @@ const getCommentFragment = (comment, comments) => {
 
 const refreshCommentFragment = async () => {
   // Fetch comments and display them in screen
-  const response = await fetch('/comments')
-  const data = await response.json()
+  try {
+    const response = await fetch('/comments')
 
-  const comments = data.comments
-  // Iterate over comments and replace commentDate strings with Luxon DateTime objects; they will be necessary
-  comments.forEach(comment => {
-    comment.commentDate = DateTime.fromISO(comment.commentDate)
-  })
-  // Sort comments by their commentDate attributes
-  comments.sort((a, b) => b.commentDate - a.commentDate)
-  // Iterate over root comments and display them in HTML
-  const commentsElement = document.getElementById('comments')
-  commentsElement.innerHTML = ''
-  comments.filter(comment => comment.parentCommentId === null).forEach(comment => {
-    commentsElement.innerHTML += getCommentFragment(comment, comments)
-  })
+    if (response.ok) {
+      const data = await response.json()
 
-  // addEventListener for upvotes buttons
-  const upvotesButtons = document.querySelectorAll('button.upvotes')
-  upvotesButtons.forEach(buttonElement => {
-    buttonElement.addEventListener('click', async event => {
-      /*
-        Update this comment by increasing its upvotes attribute by one
-      */
-      const commentId = event.target.getAttribute('comment-id')
-      // Find current upvotes value
-      const upvotesView = document.querySelector(`.upvotes.view[comment-id="${commentId}"]`)
-      const upvotesValue = parseInt(upvotesView.innerHTML)
-      try {
-        const response = await fetch(`/comments/${commentId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            comment: {
-              upvotes: upvotesValue + 1
+      const comments = data.comments
+      // Iterate over comments and replace commentDate strings with Luxon DateTime objects; they will be necessary
+      comments.forEach(comment => {
+        comment.commentDate = DateTime.fromISO(comment.commentDate)
+      })
+      // Sort comments by their commentDate attributes
+      comments.sort((a, b) => b.commentDate - a.commentDate)
+      // Iterate over root comments and display them in HTML
+      const commentsElement = document.getElementById('comments')
+      commentsElement.innerHTML = ''
+      comments.filter(comment => comment.parentCommentId === null).forEach(comment => {
+        commentsElement.innerHTML += getCommentFragment(comment, comments)
+      })
+
+      // addEventListener for upvotes buttons
+      const upvotesButtons = document.querySelectorAll('button.upvotes')
+      upvotesButtons.forEach(buttonElement => {
+        buttonElement.addEventListener('click', async event => {
+          /*
+            Update this comment by increasing its upvotes attribute by one
+          */
+          const commentId = event.target.getAttribute('comment-id')
+          // Find current upvotes value
+          const upvotesView = document.querySelector(`.upvotes.view[comment-id="${commentId}"]`)
+          const upvotesValue = parseInt(upvotesView.innerHTML)
+          try {
+            const response = await fetch(`/comments/${commentId}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                comment: {
+                  upvotes: upvotesValue + 1
+                }
+              })
+            })
+
+            if (response.ok) {
+              refreshCommentFragment()
+            } else {
+              throw Error(`${response.statusText} Error message: ${await response.text()}`)
+            }
+          } catch (e) {
+            console.log(e)
+          }
+        })
+      })
+
+      // addEventListener for Reply buttons
+      const replyButtons = document.querySelectorAll('button.reply')
+      replyButtons.forEach(replyButtonElement => {
+        /*
+          Add a create comment fragment below this comment to provide user a way to reply to this comment
+        */
+        replyButtonElement.addEventListener('click', event => {
+          const commentId = event.target.getAttribute('comment-id')
+          // Show create comment fragment below this comment
+          const nestedNewComment = document.querySelector(`.new-comment.nested[comment-id="${commentId}"]`)
+          nestedNewComment.classList.remove('hidden')
+          nestedNewComment.classList.add('flex')
+          // Set new commenter image
+          nestedNewComment.querySelector('img.commenter.new').src = generateAvatar()
+          // addEventListener for the Comment button of this new nested comment
+          nestedNewComment.querySelector('button.create-comment').addEventListener('click', async event => {
+            const commentInput = nestedNewComment.querySelector('input.comment')
+            const commentInputValue = commentInput.value
+            const comment = new Comment({
+              commentText: commentInputValue,
+              parentCommentId: commentId
+            })
+
+            try {
+              const response = await fetch('/comments', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  comment: {
+                    username: comment.username,
+                    avatar: comment.avatar,
+                    commentDate: comment.commentDate,
+                    commentText: comment.commentText,
+                    upvotes: comment.upvotes,
+                    parentCommentId: comment.parentCommentId
+                  }
+                })
+              })
+
+              if (response.ok) {
+                refreshCommentFragment()
+              } else {
+                throw Error(`${response.statusText} Error message: ${await response.text()}`)
+              }
+            } catch (e) {
+              console.log(e)
             }
           })
         })
-
-        if (response.ok) {
-          refreshCommentFragment()
-        } else {
-          throw Error(`${response.statusText} Error message: ${await response.text()}`)
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    })
-  })
-
-  // addEventListener for Reply buttons
-  const replyButtons = document.querySelectorAll('button.reply')
-  replyButtons.forEach(replyButtonElement => {
-    /*
-      Add a create comment fragment below this comment to provide user a way to reply to this comment
-    */
-    replyButtonElement.addEventListener('click', event => {
-      const commentId = event.target.getAttribute('comment-id')
-      // Show create comment fragment below this comment
-      const nestedNewComment = document.querySelector(`.new-comment.nested[comment-id="${commentId}"]`)
-      nestedNewComment.classList.remove('hidden')
-      nestedNewComment.classList.add('flex')
-      // Set new commenter image
-      nestedNewComment.querySelector('img.commenter.new').src = generateAvatar()
-      // addEventListener for the Comment button of this new nested comment
-      nestedNewComment.querySelector('button.create-comment').addEventListener('click', async event => {
-        const commentInput = nestedNewComment.querySelector('input.comment')
-        const commentInputValue = commentInput.value
-        const comment = new Comment({
-          commentText: commentInputValue,
-          parentCommentId: commentId
-        })
-
-        try {
-          const response = await fetch('/comments', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              comment: {
-                username: comment.username,
-                avatar: comment.avatar,
-                commentDate: comment.commentDate,
-                commentText: comment.commentText,
-                upvotes: comment.upvotes,
-                parentCommentId: comment.parentCommentId
-              }
-            })
-          })
-
-          if (response.ok) {
-            refreshCommentFragment()
-          } else {
-            throw Error(`${response.statusText} Error message: ${await response.text()}`)
-          }
-        } catch (e) {
-          console.log(e)
-        }
       })
-    })
-  })
+    } else {
+      throw Error(`${response.statusText} Error message: ${await response.text()}`)
+    }
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 // Add new commenter image
