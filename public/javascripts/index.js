@@ -67,7 +67,7 @@ const getCommentFragment = (comment, comments) => {
         <img src="${comment.avatar}" alt="Avatar" class="w-8 h-8"/>
         <div class="h-full ml-4 border-l-2 ${childComments.length === 0 ? 'hidden' : ''}"></div>
       </div>
-      <div>
+      <div class="grow">
         <div class="flex gap-x-3">
           <!-- User name -->
           <div class="font-medium">${comment.username}</div>
