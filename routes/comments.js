@@ -60,7 +60,12 @@ const updateComment = async (req, res, next) => {
   const comment = req.body.comment
   try {
     await Comment.update(
-      comment,
+      // Sanitize input to avoid injection attacks
+      {
+        ...(comment.avatar && { avatar: comment.avatar }),
+        ...(comment.commentText && { comment_text: comment.commentText }),
+        ...(comment.upvotes && { upvotes: comment.upvotes })
+      },
       {
         where: {
           id: commentId
