@@ -6,6 +6,7 @@
     "DavidAnson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
     "EditorConfig.EditorConfig",
+    "Orta.vscode-jest",
     "standard.vscode-standard"
   ]
 }
