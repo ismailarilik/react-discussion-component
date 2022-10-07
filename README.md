@@ -15,7 +15,6 @@ A discussion component to place below the articles
 - Start MySQL server: `sudo systemctl start mysql.service`
 - Create DB: `npm run db:create`
 - Run migrations: `npm run db:migrate`
-- Build CSS using Tailwind CSS: `npm run build-css`
 
 ## Run the example app
 
@@ -26,12 +25,6 @@ npm start
 Then navigate to [http://localhost:3000](http://localhost:3000).
 
 ## Debug the example app
-
-Build and watch CSS using Tailwind CSS:
-
-```sh
-npm run build-css:dev
-```
 
 Start the server in development mode:
 
@@ -58,7 +51,3 @@ npm run unittest
 ```sh
 npm test
 ```
-
-## Attributions
-
-Avatars are exported from [https://vue-nice-avatar.vercel.app/](https://vue-nice-avatar.vercel.app/).

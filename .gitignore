@@ -59,6 +59,3 @@ typings/
 
 # next.js build output
 .next
-
-# Tailwind CSS output directory
-public/dist
