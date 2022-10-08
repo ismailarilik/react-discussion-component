@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const setupWebSocket = require('../setupWebSocket')
+
 /**
  * Module dependencies.
  */
@@ -20,6 +22,13 @@ app.set('port', port)
  */
 
 const server = http.createServer(app)
+
+/**
+ * Pass the http server to our websocket setup function
+ * The websocket server will run on the same port, accepting ws:// connections
+ */
+
+setupWebSocket(server)
 
 /**
  * Listen on provided port, on all network interfaces.
